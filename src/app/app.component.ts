@@ -5,9 +5,9 @@ import { distinctUntilChanged, switchMap, map } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
-  selector: 'app-root',
+  selector: 'vcs-app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements AfterContentInit {
   index = 'gitxplore-app';
@@ -30,7 +30,7 @@ export class AppComponent implements AfterContentInit {
     this.searchBase = new SearchBase({
       index: this.index,
       url: this.url,
-      credentials: this.credentials
+      credentials: this.credentials,
     });
 
     // Register search component => To render the auto-suggestions
@@ -38,52 +38,52 @@ export class AppComponent implements AfterContentInit {
       dataField: [
         {
           field: 'description',
-          weight: 1
+          weight: 1,
         },
         {
           field: 'description.keyword',
-          weight: 1
+          weight: 1,
         },
         {
           field: 'description.search',
-          weight: 0.1
+          weight: 0.1,
         },
         {
           field: 'language',
-          weight: 2
+          weight: 2,
         },
         {
           field: 'language.keyword',
-          weight: 2
+          weight: 2,
         },
         {
           field: 'language.search',
-          weight: 0.2
+          weight: 0.2,
         },
         {
           field: 'name',
-          weight: 5
+          weight: 5,
         },
         {
           field: 'name.keyword',
-          weight: 5
+          weight: 5,
         },
         {
           field: 'name.search',
-          weight: 0.5
+          weight: 0.5,
         },
         {
           field: 'owner',
-          weight: 1
+          weight: 1,
         },
         {
           field: 'owner.keyword',
-          weight: 1
+          weight: 1,
         },
         {
           field: 'owner.search',
-          weight: 0.1
-        }
+          weight: 0.1,
+        },
       ],
       includeFields: [
         'name',
@@ -91,11 +91,11 @@ export class AppComponent implements AfterContentInit {
         'owner',
         'fullname',
         'language',
-        'topics'
+        'topics',
       ],
       size: 5,
       // To clear the filter values when search query gets changed
-      clearOnQueryChange: true
+      // clearOnQueryChange: true
     });
 
     // Register a component to filter languages with empty value
@@ -108,13 +108,13 @@ export class AppComponent implements AfterContentInit {
             must_not: [
               {
                 match: {
-                  'language.keyword': ''
-                }
-              }
-            ]
-          }
-        }
-      })
+                  'language.keyword': '',
+                },
+              },
+            ],
+          },
+        },
+      }),
     });
     // Register filter component with dependency on search component
     this.filterComponent = this.searchBase.register('language-filter', {
@@ -124,22 +124,22 @@ export class AppComponent implements AfterContentInit {
       size: 0,
       value: '',
       react: {
-        and: ['search-component', 'filter-languages']
-      }
+        and: ['search-component', 'filter-languages'],
+      },
     });
 
     // Register result component with react dependency on search and filter components
     this.resultComponent = this.searchBase.register('result-component', {
       dataField: 'name',
       react: {
-        and: ['search-component', 'language-filter']
+        and: ['search-component', 'language-filter'],
       },
       from: 0,
       size: 10,
       includeFields: ['name', 'description', 'url', 'avatar', 'stars'],
       defaultQuery: () => ({
-        track_total_hits: true
-      })
+        track_total_hits: true,
+      }),
     });
     this.isMobile = window.innerWidth <= 765;
     this.showFilters = !this.isMobile;
@@ -157,7 +157,7 @@ export class AppComponent implements AfterContentInit {
     if (!value) {
       this.searchComponent.setValue('', {
         triggerDefaultQuery: true,
-        triggerCustomQuery: true
+        triggerCustomQuery: true,
       });
       this.suggestions = of(this.searchComponent.suggestions);
     } else {
@@ -167,12 +167,12 @@ export class AppComponent implements AfterContentInit {
         switchMap(val => {
           this.searchComponent.setValue(val, {
             triggerDefaultQuery: false,
-            triggerCustomQuery: false
+            triggerCustomQuery: false,
           });
           return from(this.searchComponent.triggerDefaultQuery()).pipe(
-            map(() => this.searchComponent.suggestions)
+            map(() => this.searchComponent.suggestions),
           );
-        })
+        }),
       );
     }
     // Update suggestions when value gets changed
@@ -181,12 +181,12 @@ export class AppComponent implements AfterContentInit {
       switchMap(val => {
         this.searchComponent.setValue(val, {
           triggerDefaultQuery: false,
-          triggerCustomQuery: false
+          triggerCustomQuery: false,
         });
         return from(this.searchComponent.triggerDefaultQuery()).pipe(
-          map(() => this.searchComponent.suggestions)
+          map(() => this.searchComponent.suggestions),
         );
-      })
+      }),
     );
   }
 
@@ -198,7 +198,7 @@ export class AppComponent implements AfterContentInit {
   handleOptionSelect(selectedOption: MatAutocompleteSelectedEvent) {
     this.searchComponent.setValue(selectedOption.option.value, {
       triggerCustomQuery: true, // to update results
-      triggerDefaultQuery: true // to update suggestions
+      triggerDefaultQuery: true, // to update suggestions
     });
   }
 
